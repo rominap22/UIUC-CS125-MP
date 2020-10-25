@@ -1,10 +1,13 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
-import android.nfc.Tag;
+//import android.icu.text.IDNA;
+//import android.nfc.Tag;
+//import android.util.Log;
+
 import androidx.annotation.NonNull;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -162,23 +165,18 @@ public class Summary implements SortedListAdapter.ViewModel {
       @NonNull final List<Summary> courses, @NonNull final String text) {
     ArrayList<Summary> newCourses = new ArrayList<Summary>();
     for (int i = 0; i < courses.size(); i++) {
-      if ((courses.get(i).getDepartment().toLowerCase()).contains(text.toLowerCase())) {
-        newCourses.add(courses.get(i));
-      }
-      if ((courses.get(i).getNumber()).contains(text)) {
-        newCourses.add(courses.get(i));
-      }
-      if ((courses.get(i).getTitle().toLowerCase()).contains(text.toLowerCase())) {
+      if ((courses.get(i).getDepartment().toLowerCase()).contains(text.toLowerCase())
+              || (courses.get(i).getNumber().toLowerCase()).contains(text.toLowerCase())
+              || (text.toLowerCase().contains(courses.get(i).getNumber()))
+              || (courses.get(i).getTitle().toLowerCase()).contains(text.toLowerCase())) {
         newCourses.add(courses.get(i));
       }
     }
     return newCourses;
   }
-  /*
-  * some javadoc comment
-  *
+  /**
+   * @return the full line of one course
    */
-  @Override
   public String toString() {
     String s = this.getDepartment() + " " + this.getNumber() + ": " + this.getTitle();
     return s;
