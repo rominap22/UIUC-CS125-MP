@@ -1,9 +1,13 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
-import androidx.annotation.NonNull;
+// import android.nfc.Tag;
 
+import androidx.annotation.NonNull;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -69,20 +73,18 @@ public class Summary implements SortedListAdapter.ViewModel {
     return title;
   }
 
-  /**
-   * Create an empty Summary.
-   */
+  /** Create an empty Summary. */
   @SuppressWarnings({"unused", "RedundantSuppression"})
   public Summary() {}
 
   /**
    * Create a Summary with the provided fields.
    *
-   * @param setYear       the year for this Summary
-   * @param setSemester   the semester for this Summary
+   * @param setYear the year for this Summary
+   * @param setSemester the semester for this Summary
    * @param setDepartment the department for this Summary
-   * @param setNumber     the number for this Summary
-   * @param setTitle      the title for this Summary
+   * @param setNumber the number for this Summary
+   * @param setTitle the title for this Summary
    */
   public Summary(
       final String setYear,
@@ -97,9 +99,7 @@ public class Summary implements SortedListAdapter.ViewModel {
     title = setTitle;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean equals(final Object o) {
     if (!(o instanceof Summary)) {
@@ -112,35 +112,76 @@ public class Summary implements SortedListAdapter.ViewModel {
         && Objects.equals(number, course.number);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return Objects.hash(year, semester, department, number);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public <T> boolean isSameModelAs(@NonNull final T model) {
     return equals(model);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public <T> boolean isContentTheSameAs(@NonNull final T model) {
     return equals(model);
   }
 
+  /** */
   public static final Comparator<Summary> COMPARATOR =
-      (courseModel1, courseModel2) -> 0;
+      (courseModel1, courseModel2) -> {
+        // sorting the course numbers from least (top) to greatest (bottom)
+        if (courseModel1.department.compareTo(courseModel2.department) > 0) {
+          return 1;
+        } else if (courseModel1.department.compareTo(courseModel2.department) < 0) {
+          return -1;
+        } else {
+          if (courseModel1.number.compareTo(courseModel2.number) > 0) {
+            return 1;
+          } else if (courseModel1.number.compareTo(courseModel2.number) < 0) {
+            return -1;
+          } else {
+            if (courseModel1.title.compareTo(courseModel2.title) > 0) {
+              return 1;
+            } else if (courseModel1.title.compareTo(courseModel2.title) < 0) {
+              return -1;
+            }
+          }
+          return 0;
+        }
+      };
 
+  /**
+   * @param courses courses for this Summary
+   * @param text text for this Summary
+   * @return a new set of courses based on search query
+   */
   public static List<Summary> filter(
       @NonNull final List<Summary> courses, @NonNull final String text) {
-    return courses;
+    ArrayList<Summary> newCourses = new ArrayList<Summary>();
+    for (int i = 0; i < courses.size(); i++) {
+      if ((courses.get(i).getDepartment().toLowerCase()).contains(text.toLowerCase())) {
+        newCourses.add(courses.get(i));
+      }
+      if ((courses.get(i).getNumber()).contains(text)) {
+        newCourses.add(courses.get(i));
+      }
+      if ((courses.get(i).getTitle().toLowerCase()).contains(text.toLowerCase())) {
+        newCourses.add(courses.get(i));
+      }
+    }
+    return newCourses;
+  }
+  /*
+  * some javadoc comment
+  *
+   */
+  @Override
+  public String toString() {
+    String s = this.getDepartment() + " " + this.getNumber() + ": " + this.getTitle();
+    return s;
   }
 }
