@@ -1,7 +1,6 @@
 package edu.illinois.cs.cs125.fall2020.mp.models;
 
-// import android.nfc.Tag;
-
+import android.nfc.Tag;
 import androidx.annotation.NonNull;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 
