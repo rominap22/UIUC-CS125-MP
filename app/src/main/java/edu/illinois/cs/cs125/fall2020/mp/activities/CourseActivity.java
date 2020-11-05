@@ -35,10 +35,10 @@ public class CourseActivity extends AppCompatActivity {
      * @param courses the semester that was retrieved
      * @param setSummaries the summaries returned from the course API client
      */
-    @Override
+    /*@Override
     public void courseResponse(
             final Summary s, final Course c) {
         courses = Arrays.asList(setSummaries);
         listAdapter.edit().replaceAll(courses).commit();
-    }
+    }*/
 }
