@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
+import edu.illinois.cs.cs125.fall2020.mp.models.Course;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -44,6 +45,13 @@ public final class Client {
      * @param summaries an array of course summaries
      */
     default void summaryResponse(String year, String semester, Summary[] summaries) {}
+    /**
+     * Return course summaries for the given year and semester.
+     *
+     * @param summary the summary that was retrieved
+     * @param course the course that was retrieved
+     */
+    default void courseResponse(Summary summary, Course course) {};
   }
 
   /**
@@ -72,6 +80,35 @@ public final class Client {
             },
             error -> Log.e(TAG, error.toString()));
     requestQueue.add(summaryRequest);
+  }
+
+  /**
+   * Retrieve course summaries for a given year and semester.
+   *
+   * @param s the summary to retrieve
+   * @param callbacks the callback that will receive the result
+   */
+  public void getCourse(
+      @NonNull final Summary s,
+      @NonNull final CourseClientCallbacks callbacks) {
+    //instead of deserializing a Summary, deserialize a single course
+    //summary = what was passed to the method, course = deserialized from information provided by server
+    String url = CourseableApplication.SERVER_URL + "course/" + s.getYear() + "/" + s.getSemester()
+            + "/" + s.getDepartment() + "/" + s.getNumber();
+    StringRequest courseRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    response -> {
+                      try {
+                        Course c = objectMapper.readValue(response, Course.class);
+                        callbacks.courseResponse(s, c);
+                      } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                      }
+                    },
+                    error -> Log.e(TAG, error.toString()));
+    requestQueue.add(courseRequest);
   }
 
   private static Client instance;
