@@ -11,6 +11,10 @@ import java.util.Arrays;
 
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 
+/**
+ * Retrieve course activity.
+ *
+ */
 public class CourseActivity extends AppCompatActivity {
     private static final String TAG = CourseActivity.class.getSimpleName();
     @Override
