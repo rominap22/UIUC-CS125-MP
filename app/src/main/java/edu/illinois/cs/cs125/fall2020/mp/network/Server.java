@@ -58,12 +58,11 @@ public final class Server extends Dispatcher {
     // course/2020/fall/CS/125
     // make sure Summary hashCode method works (which it should)
     String[] parts = path.split("/");
-    // ObjectMapper map = new ObjectMapper();
-    // Summary s = map.readValue(summaries.get(parts[0] + "_" + parts[1]), Summary.class);
     // array list of Summaries, filter that for query text for path, invalid if empty list -->
     // return not found
+    final int numparts = 4;  //number of parts
     Summary s = new Summary(parts[0], parts[1], parts[2], parts[3]);
-    if (parts.length != 4) {
+    if (parts.length != numparts) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
     String course = courses.get(s);

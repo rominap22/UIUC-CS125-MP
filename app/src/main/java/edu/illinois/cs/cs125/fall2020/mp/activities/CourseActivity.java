@@ -19,7 +19,9 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
   private static final String TAG = CourseActivity.class.getSimpleName();
   // Binding to the layout in activity_main.xml
   private ActivityCourseBinding binding;
-
+  /**
+   * onCreate for deserializing String to Summary and getting callbacks.
+   */
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

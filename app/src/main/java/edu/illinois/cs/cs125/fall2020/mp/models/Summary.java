@@ -108,16 +108,16 @@ public class Summary implements SortedListAdapter.ViewModel {
    * @param setDepartment the department for this Summary
    * @param setNumber the number for this Summary
    */
-    public Summary(
-            final String setYear,
-            final String setSemester,
-            final String setDepartment,
-            final String setNumber) {
-      year = setYear;
-      semester = setSemester;
-      department = setDepartment;
-      number = setNumber;
-    }
+  public Summary(
+          final String setYear,
+          final String setSemester,
+          final String setDepartment,
+          final String setNumber) {
+    year = setYear;
+    semester = setSemester;
+    department = setDepartment;
+    number = setNumber;
+  }
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object o) {
