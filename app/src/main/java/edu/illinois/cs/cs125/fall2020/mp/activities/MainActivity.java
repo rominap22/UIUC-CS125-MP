@@ -6,9 +6,7 @@ import android.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import edu.illinois.cs.cs125.fall2020.mp.R;
@@ -144,7 +142,7 @@ public final class MainActivity extends AppCompatActivity
    */
   @Override
   public void onCourseClicked(final Summary course) {
-    //serialize the Summary into a String
+    // serialize the Summary into a String
     String json = "";
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -154,7 +152,7 @@ public final class MainActivity extends AppCompatActivity
     }
     Intent startCourseActivity = new Intent(this, CourseActivity.class);
     startCourseActivity.putExtra("json", json);
-    //startCourseActivity.putExtra("TITLE", course.getTitle());
+    // startCourseActivity.putExtra("TITLE", course.getTitle());
     startActivity(startCourseActivity);
   }
 }

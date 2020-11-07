@@ -88,26 +88,33 @@ public final class Client {
    * @param s the summary to retrieve
    * @param callbacks the callback that will receive the result
    */
-  public void getCourse(
-      @NonNull final Summary s,
-      @NonNull final CourseClientCallbacks callbacks) {
-    //instead of deserializing a Summary, deserialize a single course
-    //summary = what was passed to the method, course = deserialized from information provided by server
-    String url = CourseableApplication.SERVER_URL + "course/" + s.getYear() + "/" + s.getSemester()
-            + "/" + s.getDepartment() + "/" + s.getNumber();
+  public void getCourse(@NonNull final Summary s, @NonNull final CourseClientCallbacks callbacks) {
+    // instead of deserializing a Summary, deserialize a single course
+    // summary = what was passed to the method, course = deserialized from information provided by
+    // server
+    String url =
+        CourseableApplication.SERVER_URL
+            + "course/"
+            + s.getYear()
+            + "/"
+            + s.getSemester()
+            + "/"
+            + s.getDepartment()
+            + "/"
+            + s.getNumber();
     StringRequest courseRequest =
-            new StringRequest(
-                    Request.Method.GET,
-                    url,
-                    response -> {
-                      try {
-                        Course c = objectMapper.readValue(response, Course.class);
-                        callbacks.courseResponse(s, c);
-                      } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                      }
-                    },
-                    error -> Log.e(TAG, error.toString()));
+        new StringRequest(
+            Request.Method.GET,
+            url,
+            response -> {
+              try {
+                Course c = objectMapper.readValue(response, Course.class);
+                callbacks.courseResponse(s, c);
+              } catch (JsonProcessingException e) {
+                e.printStackTrace();
+              }
+            },
+            error -> Log.e(TAG, error.toString()));
     requestQueue.add(courseRequest);
   }
 
@@ -139,9 +146,12 @@ public final class Client {
     Cache cache = new NoCache();
     Network network = new BasicNetwork(new HurlStack());
     HttpURLConnection.setFollowRedirects(true);
-    requestQueue = new RequestQueue(
-            cache, network, THREAD_POOL_SIZE, new ExecutorDelivery(Executors.newSingleThreadExecutor())
-    );
+    requestQueue =
+        new RequestQueue(
+            cache,
+            network,
+            THREAD_POOL_SIZE,
+            new ExecutorDelivery(Executors.newSingleThreadExecutor()));
 
     // Configure the Jackson object mapper to ignore unknown properties
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

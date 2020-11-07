@@ -51,21 +51,23 @@ public final class Server extends Dispatcher {
 
   @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
   private final Map<Summary, String> courses = new HashMap<>();
+
   private MockResponse getCourse(@NonNull final String path) throws JsonProcessingException {
-    //take the path and turn it into a Summary / something it can look up in the courses map
-    //return whatever is in that courses map as a String
+    // take the path and turn it into a Summary / something it can look up in the courses map
+    // return whatever is in that courses map as a String
     // course/2020/fall/CS/125
-    //make sure Summary hashCode method works (which it should)
+    // make sure Summary hashCode method works (which it should)
     String[] parts = path.split("/");
-    //ObjectMapper map = new ObjectMapper();
-    //Summary s = map.readValue(summaries.get(parts[0] + "_" + parts[1]), Summary.class);
-    //array list of Summaries, filter that for query text for path, invalid if empty list --> return not found
+    // ObjectMapper map = new ObjectMapper();
+    // Summary s = map.readValue(summaries.get(parts[0] + "_" + parts[1]), Summary.class);
+    // array list of Summaries, filter that for query text for path, invalid if empty list -->
+    // return not found
     Summary s = new Summary(parts[0], parts[1], parts[2], parts[3]);
     if (parts.length != 4) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
     String course = courses.get(s);
-    //String course = courses.get(s);
+    // String course = courses.get(s);
     if (course == null) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     }
@@ -89,8 +91,8 @@ public final class Server extends Dispatcher {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     } catch (Exception e) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-      //e.printStackTrace();
-      //return null;
+      // e.printStackTrace();
+      // return null;
     }
   }
 
