@@ -60,7 +60,7 @@ public final class Server extends Dispatcher {
     String[] parts = path.split("/");
     // array list of Summaries, filter that for query text for path, invalid if empty list -->
     // return not found
-    final int numparts = 4;  //number of parts
+    final int numparts = 4; // number of parts
     Summary s = new Summary(parts[0], parts[1], parts[2], parts[3]);
     if (parts.length != numparts) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);

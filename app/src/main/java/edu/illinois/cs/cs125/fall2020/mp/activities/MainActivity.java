@@ -151,8 +151,7 @@ public final class MainActivity extends AppCompatActivity
       e.printStackTrace();
     }
     Intent startCourseActivity = new Intent(this, CourseActivity.class);
-    startCourseActivity.putExtra("json", json);
-    // startCourseActivity.putExtra("TITLE", course.getTitle());
+    startCourseActivity.putExtra("COURSE", json);
     startActivity(startCourseActivity);
   }
 }
