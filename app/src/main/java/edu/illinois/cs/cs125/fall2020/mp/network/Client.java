@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.models.Course;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -52,6 +53,8 @@ public final class Client {
      * @param course the course that was retrieved
      */
     default void courseResponse(Summary summary, Course course) {};
+
+    default void yourRating(Summary summary, Rating rating) { }
   }
 
   /**
@@ -116,6 +119,29 @@ public final class Client {
             },
             error -> Log.e(TAG, error.toString()));
     requestQueue.add(courseRequest);
+  }
+  /**
+   * Represents the rating of the client from the url.
+   * @param s is the summary
+   * @param clientID is the client ID
+   * @param callbacks is the callback
+   */
+  public void getRating(
+          @NonNull final Summary s, @NonNull final String clientID, @NonNull final CourseClientCallbacks callbacks
+  ) {
+    throw new IllegalStateException("Not yet implemented Rominaaaa");
+  }
+  /**
+   * Represents the data of the rating.
+   * @param s1 is the summary
+   * @param rating is the rating
+   * @param callbacks1 is the callback
+   *
+   */
+  public void postRating(
+          @NonNull final Summary s1, @NonNull final Rating rating, @NonNull final CourseClientCallbacks callbacks1
+  ) {
+    throw new IllegalStateException("Not yet implemented Rominaaaa");
   }
 
   private static Client instance;
