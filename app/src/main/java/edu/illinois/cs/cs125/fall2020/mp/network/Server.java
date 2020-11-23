@@ -49,6 +49,19 @@ public final class Server extends Dispatcher {
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(summary);
   }
 
+  private String theString = "";
+  private MockResponse testPost(@NonNull final RecordedRequest request) {
+    if (request.getMethod().equals("GET")) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(theString);
+    } else if (request.getMethod().equals("POST")) {
+      theString = request.getBody().readUtf8();
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
+              "Location", "/test/"
+      );
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+  }
+
   @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
   private final Map<Summary, String> courses = new HashMap<>();
 

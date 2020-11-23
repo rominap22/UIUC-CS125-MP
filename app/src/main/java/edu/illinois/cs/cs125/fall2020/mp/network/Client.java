@@ -53,7 +53,12 @@ public final class Client {
      * @param course the course that was retrieved
      */
     default void courseResponse(Summary summary, Course course) {};
-
+    /**
+     * Return course summaries for the given year and semester.
+     *
+     * @param summary the summary that was retrieved
+     * @param rating the course that was retrieved
+     */
     default void yourRating(Summary summary, Rating rating) { }
   }
 
