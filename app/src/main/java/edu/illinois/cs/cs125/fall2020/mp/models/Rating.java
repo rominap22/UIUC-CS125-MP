@@ -8,7 +8,7 @@ public class Rating {
   private String id;
   private double rating;
   /**
-   * Default constructor for Jackson purposes.
+   * Default constructor for being serialized and deserialized by Jackson.
    */
   public Rating() {  }
   /**
@@ -22,18 +22,21 @@ public class Rating {
   }
   /**
    * Getting the id of the rating.
-   * @return string of the id
+   * @return UUID as a String for this Rating object
    */
   public String getId() {
     //throw new IllegalStateException("Not yet implemented Rominaaaa");
-    return "";
+    return id;
   }
   /**
    * Getting the rating itself.
-   * @return string of the rating
+   * @return numeric rating as a double for this Rating object
    */
-  public String getRating() {
+  public double getRating() {
     //throw new IllegalStateException("Not yet implemented Rominaaaa");
-    return "";
+    //valid ratings are 0 to 5
+
+    //if client has not set the rating, set rating = NOT_RATED and return rating.
+    return rating;
   }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+//import java.util.UUID;
+
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -62,6 +65,87 @@ public final class Server extends Dispatcher {
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
   }
 
+  /*private MockResponse postRating(@NonNull final String path) throws JsonProcessingException {
+    Map<Summary, Map<String, Rating> ratings = new Map<Summary, Map<String, Rating>>();
+    String[] parts = path.split("/");
+    final int numparts = 4; // number of parts
+    Rating s = new Rating(parts[0], parts[1], parts[2], parts[3]);
+    if (parts.length != numparts) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    String course = courses.get(s);
+    if (course == null) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+    }
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(course);
+  }*/
+  private Map<Summary, Map<String, Rating>> ratings = new HashMap<>();
+  private MockResponse getRating(@NonNull final String path) throws JsonProcessingException {
+    // <String, Map<String, Rating>> = <UUID, Map<Course/Summary, Rating>>
+    // ratings.get(UUID).get(Summary as a String)
+    //String[] parts = path.split("?client=");     //to get the UUID
+    //System.out.println("entered: " + parts[0] + " " + parts[1]);
+    //rating/YEAR/SEMESTER/DEPARTMENT/NUMBER?client=UUID
+    //UUID id = UUID.fromString(parts[1]);
+    String[] summaryParts = path.split("/");
+    int num = 3;
+    num++;
+    String[] parts = summaryParts[num].split("?client=");     //to get the UUID
+    Summary s = new Summary(summaryParts[1], summaryParts[2], summaryParts[3], parts[0], "");
+    String uuid = summaryParts[1];
+    Map<String, Rating> innerMap = new HashMap<>();
+    innerMap = ratings.get(s);
+    final int numparts = 4; // number of parts
+    final int uuidLen = 36; // length of uuid
+    if (parts.length != numparts) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+
+    if (uuid == null) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    if (parts.length != uuidLen) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    if (s == null) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+    }
+    Rating r = null;
+    if (r == null) {
+      r = new Rating(uuid, Rating.NOT_RATED);
+    }
+    if (innerMap == null) {
+      r = new Rating();
+    } else {
+      r = innerMap.get(uuid);
+    }
+    try {
+      ObjectMapper mapper1 = new ObjectMapper();
+      String rating = mapper1.writeValueAsString(r);
+      // inner and outer map
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    //try/catch UUID.fromString(String s) if s is a valid UUID
+    //invalid uuid bad request
+    //not found = if summary is not in the map
+    //serialization and then return
+    //set body to the serialized rating
+    //final int numparts = 4; // number of parts
+    //String[] summaryParts = path.split("/");
+    /*String rating = ratings.get(summaryParts[0] + "_" + summaryParts[1]);
+    Rating r = new Rating(parts[1], ratings.get(parts[1]).get(rating));
+    if (parts.length != numparts) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    //double rating = ratings.get(r);
+    if (rating == null) {
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
+    }*/
+    //jackson
+    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK);
+  }
+
   @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
   private final Map<Summary, String> courses = new HashMap<>();
 
@@ -99,6 +183,8 @@ public final class Server extends Dispatcher {
         return getSummary(path.replaceFirst("/summary/", ""));
       } else if (path.startsWith("/course/")) {
         return getCourse(path.replaceFirst("/course/", ""));
+      } else if (path.startsWith("/rating/")) {
+        return getCourse(path.replaceFirst("/rating/", ""));
       }
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     } catch (Exception e) {

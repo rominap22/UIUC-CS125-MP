@@ -11,6 +11,7 @@ import edu.illinois.cs.cs125.fall2020.mp.R;
 import edu.illinois.cs.cs125.fall2020.mp.application.CourseableApplication;
 import edu.illinois.cs.cs125.fall2020.mp.databinding.ActivityCourseBinding;
 import edu.illinois.cs.cs125.fall2020.mp.models.Course;
+import edu.illinois.cs.cs125.fall2020.mp.models.Rating;
 import edu.illinois.cs.cs125.fall2020.mp.models.Summary;
 import edu.illinois.cs.cs125.fall2020.mp.network.Client;
 
@@ -49,5 +50,13 @@ public class CourseActivity extends AppCompatActivity implements Client.CourseCl
     // title (dept, number, title), description
     binding.header.setText(s.toString());
     binding.description.setText(c.getDescription());
+  }
+  /**
+   * Callback called when the client has retrieved the list of courses for this component to
+   * display.
+   */
+  @Override
+  public void yourRating(final Summary s, final Rating r) {
+    binding.rating.setRating((float) r.getRating());
   }
 }

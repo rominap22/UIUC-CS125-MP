@@ -126,13 +126,14 @@ public final class Client {
     requestQueue.add(courseRequest);
   }
   /**
-   * Represents the rating of the client from the url.
-   * @param s is the summary
-   * @param clientID is the client ID
-   * @param callbacks is the callback
+   * Represents the data of the rating.
+   * @param s1 is the summary
+   * @param clientId is the client id
+   * @param callbacks1 is the callback
+   *
    */
   public void getRating(
-          @NonNull final Summary s, @NonNull final String clientID, @NonNull final CourseClientCallbacks callbacks
+          @NonNull final Summary s1, @NonNull final String clientId, @NonNull final CourseClientCallbacks callbacks1
   ) {
     throw new IllegalStateException("Not yet implemented Rominaaaa");
   }
