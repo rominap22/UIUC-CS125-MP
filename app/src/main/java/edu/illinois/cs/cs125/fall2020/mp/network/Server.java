@@ -80,51 +80,78 @@ public final class Server extends Dispatcher {
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(course);
   }*/
   private Map<Summary, Map<String, Rating>> ratings = new HashMap<>();
-  private MockResponse getRating(@NonNull final String path) throws JsonProcessingException {
+  private MockResponse getRating(@NonNull final RecordedRequest request) throws JsonProcessingException {
     // <String, Map<String, Rating>> = <UUID, Map<Course/Summary, Rating>>
     // ratings.get(UUID).get(Summary as a String)
     //String[] parts = path.split("?client=");     //to get the UUID
     //System.out.println("entered: " + parts[0] + " " + parts[1]);
     //rating/YEAR/SEMESTER/DEPARTMENT/NUMBER?client=UUID
     //UUID id = UUID.fromString(parts[1]);
-    String[] summaryParts = path.split("/");
-    int num = 3;
-    num++;
-    String[] parts = summaryParts[num].split("?client=");     //to get the UUID
-    Summary s = new Summary(summaryParts[1], summaryParts[2], summaryParts[3], parts[0], "");
-    String uuid = summaryParts[1];
-    Map<String, Rating> innerMap = new HashMap<>();
-    innerMap = ratings.get(s);
-    final int numparts = 4; // number of parts
+    final int numparts = 5; // number of parts
     final int uuidLen = 36; // length of uuid
-    if (parts.length != numparts) {
+    String path = request.getPath().replaceFirst("/", "");
+    String[] summaryParts = path.split("/");
+    if (summaryParts.length != numparts) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
-
-    if (uuid == null) {
+    final int num = 4;
+    String[] parts = summaryParts[num].split("client=");     //to get the UUID
+    String number = parts[0].substring(0, num - 1);
+    double rating = 0.0;
+    if (parts.length != 2) {
+      System.out.println("print 1");
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
-    if (parts.length != uuidLen) {
-      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
-    }
-    if (s == null) {
+    Summary s = new Summary(summaryParts[1], summaryParts[2], summaryParts[3], number, "");
+    if (courses.get(s) == null) {
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     }
-    Rating r = null;
-    if (r == null) {
-      r = new Rating(uuid, Rating.NOT_RATED);
+    String uuid = parts[1];
+    Map<String, Rating> innerMap = new HashMap<>();
+    innerMap = ratings.get(s);
+    if (uuid == null) {
+      System.out.println("print 2");
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
+    }
+    if (uuid.length() != uuidLen) {
+      System.out.println("print 3");
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
     }
     if (innerMap == null) {
-      r = new Rating();
+      rating = Rating.NOT_RATED;
+    } else {
+      if (innerMap.get(uuid) == null) {
+        rating = Rating.NOT_RATED;
+      } else {
+        rating = innerMap.get(uuid).getRating();
+      }
+    }
+    /*if (innerMap == null) {
+
     } else {
       r = innerMap.get(uuid);
-    }
-    try {
-      ObjectMapper mapper1 = new ObjectMapper();
-      String rating = mapper1.writeValueAsString(r);
-      // inner and outer map
-    } catch (Exception e) {
-      e.printStackTrace();
+      if (r == null) {
+        r = new Rating(uuid, Rating.NOT_RATED);
+      } else {
+        r = new Rating(uuid, innerMap.get(uuid).getRating());
+      }*/
+
+    if (request.getMethod().equals("GET")) {
+      Rating ratingObj = new Rating(uuid, rating);
+      String rating1 = "";
+      try {
+        ObjectMapper mapper1 = new ObjectMapper();
+        rating1 = mapper1.writeValueAsString(ratingObj);
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(rating1);
+    } else if (request.getMethod().equals("POST")) {
+      //deserialize from string to rating and update course
+      theString = request.getBody().readUtf8();
+      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
+              "Location", "/test/"
+      );
     }
     //try/catch UUID.fromString(String s) if s is a valid UUID
     //invalid uuid bad request
@@ -184,13 +211,14 @@ public final class Server extends Dispatcher {
       } else if (path.startsWith("/course/")) {
         return getCourse(path.replaceFirst("/course/", ""));
       } else if (path.startsWith("/rating/")) {
-        return getCourse(path.replaceFirst("/rating/", ""));
+        return getRating(request);
       }
+      //System.out.println("print not found");
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
     } catch (Exception e) {
+      System.out.println("print not found");
+      e.printStackTrace();
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_INTERNAL_ERROR);
-      // e.printStackTrace();
-      // return null;
     }
   }
 
