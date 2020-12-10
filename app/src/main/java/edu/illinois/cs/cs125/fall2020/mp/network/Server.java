@@ -52,18 +52,6 @@ public final class Server extends Dispatcher {
     return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(summary);
   }
 
-  private String theString = "";
-  private MockResponse testPost(@NonNull final RecordedRequest request) {
-    if (request.getMethod().equals("GET")) {
-      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(theString);
-    } else if (request.getMethod().equals("POST")) {
-      theString = request.getBody().readUtf8();
-      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
-              "Location", "/test/"
-      );
-    }
-    return new MockResponse().setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST);
-  }
 
   /*private MockResponse postRating(@NonNull final String path) throws JsonProcessingException {
     Map<Summary, Map<String, Rating> ratings = new Map<Summary, Map<String, Rating>>();
@@ -126,15 +114,6 @@ public final class Server extends Dispatcher {
         rating = innerMap.get(uuid).getRating();
       }
     }
-    /*if (innerMap == null) {
-
-    } else {
-      r = innerMap.get(uuid);
-      if (r == null) {
-        r = new Rating(uuid, Rating.NOT_RATED);
-      } else {
-        r = new Rating(uuid, innerMap.get(uuid).getRating());
-      }*/
 
     if (request.getMethod().equals("GET")) {
       Rating ratingObj = new Rating(uuid, rating);
@@ -146,12 +125,6 @@ public final class Server extends Dispatcher {
         e.printStackTrace();
       }
       return new MockResponse().setResponseCode(HttpURLConnection.HTTP_OK).setBody(rating1);
-    } else if (request.getMethod().equals("POST")) {
-      //deserialize from string to rating and update course
-      theString = request.getBody().readUtf8();
-      return new MockResponse().setResponseCode(HttpURLConnection.HTTP_MOVED_TEMP).setHeader(
-              "Location", "/test/"
-      );
     }
     //try/catch UUID.fromString(String s) if s is a valid UUID
     //invalid uuid bad request

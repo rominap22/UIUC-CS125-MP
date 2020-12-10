@@ -135,7 +135,30 @@ public final class Client {
   public void getRating(
           @NonNull final Summary s1, @NonNull final String clientId, @NonNull final CourseClientCallbacks callbacks1
   ) {
-    throw new IllegalStateException("Not yet implemented Rominaaaa");
+    String url =
+            CourseableApplication.SERVER_URL
+                    + "rating/"
+                    + s1.getYear()
+                    + "/"
+                    + s1.getSemester()
+                    + "/"
+                    + s1.getDepartment()
+                    + "/"
+                    + s1.getNumber() + "?client=" + clientId;
+    StringRequest ratingRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    response -> {
+                      try {
+                        Rating rating = objectMapper.readValue(response, Rating.class);
+                        callbacks1.yourRating(s1, rating);
+                      } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                      }
+                    },
+                    error -> Log.e(TAG, error.toString()));
+    requestQueue.add(ratingRequest);
   }
   /**
    * Represents the data of the rating.
